@@ -5,7 +5,7 @@ inspiration: passive income, hero's journey, do something, literate programming
 stretch-goal: self-expression
 more:
 get in a rhythm versus pushing.
-use paper like you would math
+use paper like you would math: must
 relax vocal chords
 move and dance
 use left eye
@@ -44,6 +44,46 @@ def create_stretches(price_list):
                 positive_time_sum, positive_sum = 0,0
             last_parity = -1
     return positive_stretches, negative_stretches
- 
 positive_stretches, negative_stretches = [], []
 positive_stretches, negative_stretches = create_stretches(closing_prices)
+negative_price_avg,negative_time_avg = 0.0,0.0
+positive_price_avg,positive_time_avg = 0.0,0.0
+for price,time in positive_stretches:
+    positive_price_avg += price
+    positive_time_avg += time
+positive_price_avg = positive_price_avg / len(positive_stretches)
+positive_time_avg = positive_time_avg / len(positive_stretches)
+for time,price in positive_stretches:
+    positive_price_avg += price
+    positive_time_avg += time
+positive_price_avg = positive_price_avg / len(positive_stretches)
+positive_time_avg = positive_time_avg / len(positive_stretches)
+for time,price in negative_stretches:
+    negative_price_avg += price
+    negative_time_avg += time
+negative_price_avg = negative_price_avg / len(negative_stretches)
+negative_time_avg = negative_time_avg / len(negative_stretches)
+
+def get_current_stretch(price_list):
+    first = True
+    direction = 0
+    time = 0
+    if(len(price_list) <= 1):
+        return -1
+    for i in reversed(range(0, len(price_list))):
+        if first:
+            if(price_list[i-1] <= price_list[i]):
+                direction = 1
+            else:
+                direction = -1
+            first = False
+        else:
+            time += 1
+            if direction == 1:
+                if(price_list[i-1] >= price_list[i]):
+                    return (price_list[i-1], time, direction)
+            else:
+                if(price_list[i-1] < price_list[i]):
+                    return (price_list[i-1], time, direction)
+
+#def short_or_long(price_list):
