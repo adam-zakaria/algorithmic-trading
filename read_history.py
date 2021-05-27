@@ -63,11 +63,11 @@ for time,price in negative_stretches:
     negative_time_avg += time
 negative_price_avg = negative_price_avg / len(negative_stretches)
 negative_time_avg = negative_time_avg / len(negative_stretches)
-
 def get_current_stretch(price_list):
     first = True
     direction = 0
     time = 0
+    prices = []
     if(len(price_list) <= 1):
         return -1
     for i in reversed(range(0, len(price_list))):
@@ -77,13 +77,34 @@ def get_current_stretch(price_list):
             else:
                 direction = -1
             first = False
+            prices.append(price_list[i])
         else:
             time += 1
+            prices.append(price_list[i])
             if direction == 1:
                 if(price_list[i-1] >= price_list[i]):
+                    print(f'prices for stretch: {prices}')
                     return (price_list[i-1], time, direction)
             else:
                 if(price_list[i-1] < price_list[i]):
+                    print(f'prices for stretch: {prices}')
                     return (price_list[i-1], time, direction)
 
-#def short_or_long(price_list):
+#Should be called every minute
+#I guess this doesn't really work with currencies that have little price data. But maybe there are patterns across currencies
+def short_or_long(price_list):
+    (price, time, direction) = get_current_stretch(price_list)
+    if direction == 1:
+        if (price >= (positive_price_avg * .95)):
+            print(f'current_price: {price}')
+            print(f'positive_price_avg: {positive_price_avg}')
+            print(f'time: {time}')
+            return 'SHORT'
+    else: #direction == -1
+        if (price <= (negative_price_avg * 1.05)):
+            print(f'current_price: {price}')
+            print(f'negative_price_avg: {negative_price_avg}')
+            print(f'time: {time}')
+            return 'LONG'
+
+short_or_long(closing_prices)
