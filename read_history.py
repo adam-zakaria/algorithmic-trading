@@ -1,4 +1,5 @@
 import csv
+import sys
 """
 author: Adam Zakaria
 inspiration: passive income, hero's journey, do something, literate programming
@@ -19,38 +20,42 @@ with open('./ETHUSDT_720.csv', newline='') as f:
         closing_prices.append(row[4])
 closing_prices = [float(i) for i in closing_prices]
 def create_stretches(price_list):
-    last_parity, positive_sum, negative_sum, positive_time_sum, negative_time_sum = 0,0,0,0,0
-    positive_stretches, negative_stretches = [], []
+    direction, price_increase, price_decrease, time_increasing, time_decreasing = '',0,0,0,0
+    increases, decreases = [], []
     for i in range(0, len(price_list)-2):
         if (price_list[i+1] - price_list[i] >= 0.0):
-            positive_sum += price_list[i+1] - price_list[i]
-            positive_time_sum += 1
-            if (last_parity == -1):
-                negative_stretches.append((negative_time_sum, negative_sum))
-                negative_time_sum, negative_sum = 0,0
-            last_parity = 1
+            price_increase += price_list[i+1] - price_list[i]
+            time_increasing += 1
+            if (direction == 'down'):
+                decreases.append((time_decreasing, price_decrease))
+                time_decreasing, price_decrease = 0,0
+            direction = 'up'
         if (price_list[i+1] - price_list[i] < 0.0):
-            negative_sum += price_list[i+1] - price_list[i]
-            negative_time_sum += 1
-            if (last_parity == 1):
-                positive_stretches.append((positive_time_sum, positive_sum))
-                positive_time_sum, positive_sum = 0,0
-            last_parity = -1
-    return positive_stretches, negative_stretches
-def get_averages(positive_stretches, negative_stretches):
-    negative_price_avg,negative_time_avg = 0.0,0.0
-    positive_price_avg,positive_time_avg = 0.0,0.0
-    for price,time in positive_stretches:
-        positive_price_avg += price
-        positive_time_avg += time
-    positive_price_avg = positive_price_avg / len(positive_stretches)
-    positive_time_avg = positive_time_avg / len(positive_stretches)
-    for time,price in negative_stretches:
-        negative_price_avg += price
-        negative_time_avg += time
-    negative_price_avg = negative_price_avg / len(negative_stretches)
-    negative_time_avg = negative_time_avg / len(negative_stretches)
-    return positive_price_avg, positive_time_avg, negative_price_avg, negative_time_avg
+            price_decrease += price_list[i+1] - price_list[i]
+            time_decreasing += 1
+            if (direction == 'up'):
+                increases.append((time_increasing, price_increase))
+                time_increasing, price_increase = 0,0
+            direction = 'down'
+    return increases, decreases
+def get_averages(increases, decreases):
+    average_price_decrease,average_time_decrease = 0.0,0.0
+    average_price_increase,average_time_increase = 0.0,0.0
+    for price,time in increases:
+        average_price_increase += price
+        average_time_increase += time
+    average_price_increase = average_price_increase / len(increases)
+    average_time_increase = average_time_increase / len(increases)
+    for time,price in decreases:
+        average_price_decrease += price
+        average_time_decrease += time
+    average_price_decrease = average_price_decrease / len(decreases)
+    average_time_decrease = average_time_decrease / len(decreases)
+    print(f'average_price_increase: {average_price_increase}')
+    print(f'average_time_increase: {average_time_increase}')
+    print(f'average_price_decrease: {average_price_increase}')
+    print(f'average_time_decrease: {average_time_decrease}')
+    return average_price_increase, average_time_decrease, average_price_decrease, average_time_decrease
 def get_current_stretch(price_list):
     first = True
     direction = 0
@@ -61,15 +66,15 @@ def get_current_stretch(price_list):
     for i in reversed(range(0, len(price_list))):
         if first:
             if(price_list[i-1] <= price_list[i]):
-                direction = 1
+                direction = 'up' 
             else:
-                direction = -1
+                direction = 'down' 
             first = False
             prices.append(price_list[i])
         else:
             time += 1
             prices.append(price_list[i])
-            if direction == 1:
+            if direction == 'up':
                 if(price_list[i-1] >= price_list[i]):
                     print(f"prices for stretch: {prices[::-1]}")
                     return (price_list[-1] - price_list[i], time, direction)
@@ -77,49 +82,101 @@ def get_current_stretch(price_list):
                 if(price_list[i-1] < price_list[i]):
                     print(f'prices for stretch: {prices[::-1]}')
                     return (price_list[i] - price_list[-1], time, direction)
-def short_or_long(price_list,positive_price_avg, positive_time_avg, negative_price_avg, negative_time_avg):
-    (price, time, direction) = get_current_stretch(price_list)
-    if direction == 1:
-        if (price >= (positive_price_avg * .95)):
-            print(f'current stretch price change: {price}')
-            print(f'positive_price_avg: {positive_price_avg}')
-            print(f'positive_time_avg: {positive_time_avg}')
-            print(f'length of stretch: {time}')
-            print('direction == 1')
-            print('SHORT')
-            return 'SHORT'
-    else: #direction == -1
-        if (price <= (negative_price_avg * 1.05)):
-            print(f'current stretch price change: {price}')
-            print(f'negative_price_avg: {negative_price_avg}')
-            print(f'negative_time_avg: {negative_time_avg}')
-            print(f'length of stretch: {time}')
-            print('direction == -1')
-            print('LONG')
-            return 'LONG'
-
-positive_stretches, negative_stretches = create_stretches(closing_prices)
-positive_price_avg, positive_time_avg, negative_price_avg, negative_time_avg = get_averages(positive_stretches, negative_stretches)
-short_or_long(closing_prices,positive_price_avg, positive_time_avg, negative_price_avg, negative_time_avg )
-
-test_prices1 = [1,2,3,4,4,3,3,5,6,7,8,7,9,10,11,12,13,14,13,12,11,10,9,10,11]
-
+#This should be called every tick
+#Need to figure out what to do with a small price history
+def short_or_long(price_list, average_price_increase, average_time_increase, average_price_decrease, average_time_decrease):
+    (price_change, time, direction) = get_current_stretch(price_list)
+    if direction == 'up':
+        print('direction == up')
+        if (price_change >= (average_price_increase * .95)): #The price is expected to go up
+            print('short')
+            return 'short'
+        else:
+            print('long')
+            return 'long'
+    else: #direction == down
+        print(f'current stretch price change: {price_change}')
+        print(f'average_price_decrease: {average_price_decrease}')
+        print(f'average_time_decrease: {average_time_decrease}')
+        print(f'length of stretch: {time}')
+        print('direction == down')
+        if (price_change <= (average_price_decrease * 1.05)):
+            print('long')
+            return 'long'
+        else:
+            print('short')
+            return('short')
+#region closing_prices
+"""
 print('----------------------')
-positive_stretches, negative_stretches = create_stretches(test_prices1)
-positive_price_avg, positive_time_avg, negative_price_avg, negative_time_avg = get_averages(positive_stretches, negative_stretches)
-short_or_long(test_prices1,positive_price_avg, positive_time_avg, negative_price_avg, negative_time_avg)
+print('closing_prices')
+positive_stretches, negative_stretches = create_stretches(closing_prices)
+average_price_increase, average_time_increase, average_price_decrease, average_time_decrease = get_averages(positive_stretches, negative_stretches)
+short_or_long(closing_prices,average_price_increase, average_time_increase, average_price_decrease, average_time_decrease )
+print('----------------------')
+#endregion
+#region test_prices2
+print('----------------------')
+print('test_prices2')
+#test_prices1 = [1,2,3,4,3,2,3,4,5,6,7,8,7,9,10,11,12,13,14,13,12,11,10,9,10,11]
+test_prices2 = [1,10, 13, 5, 22, 32, 4, 29]
+increases, decreases = create_stretches(test_prices2)
+average_price_increase, average_time_increase, average_price_decrease, average_time_decrease = get_averages(increases, decreases)
+short_or_long(test_prices2,average_price_increase, average_time_increase, average_price_decrease, average_time_decrease)
+#endregion
+"""
 
-#I need to test short_or_long to make sure it works as expected
-#I need to backtest to see if there's any sign it might work
-#Can I find if there are any similarities across cryptocurrencies?
-#Can I do something that will more clearly make money? Arbitrage check - Ebay purchases.
+#spends all savings to buy a coin
+def buy(price, savings):
+    if savings == 0:
+        print('Tried to buy, but savings are $0, exiting.')
+        quit()
+        #sys.exit()
+    num_coins = price / savings
+    savings = 0
+    return savings, num_coins
+
+def sell(price, coins_holding):
+    savings = coins_holding * price
+    return savings 
+
+closing_prices = [10, 13, 16, 19, 23]
+first = True
+holding = False
+savings = 1000.0
+num_coins = 0.0
+for t in (range(1, len(closing_prices))): 
+    if closing_prices[t] - closing_prices[t-1] > 0: #increasing
+        if not holding:
+            savings, num_coins = buy(closing_prices[t], savings)
+            print(f'Bought {num_coins} coins at ${closing_prices[t]} at time {t} for ${num_coins * closing_prices[t]}')
+    elif closing_prices[t] - closing_prices[t-1] < 0: #decreasing, if same, do nothing
+        if holding:
+            savings = sell(closing_prices[t], num_coins)
+            print(f'Sold {num_coins} coins at ${closing_prices[t]} at time {t} for ${num_coins * closing_prices[t]}')
+
+print(f'savings: {savings} num_coins: {num_coins}')
+
+def get_volatility():
+    return 0
+
+
 
 """
-How do I test it? I could look at the prices and see if the answers are sensible.
-#get the last 10 closing prices:
-closing_prices[-10:]
+*Additional Notes*
+~On the code~
+increases and decreases do not include the last stretch because our strategy is 
+to compare the latest stretch to the previous stretches to decide if we should 
+buy or sell.
 
-I kind of want more information: What is the mean, median, and mode.
-Okay - so when the price goes up it tends to go up by 30 each stretch, and there's an upward trend overall.
 
+
+
+
+
+~For the future~
+I need to test short_or_long to make sure it works as expected
+I need to backtest to see if there's any sign it might work
+Can I find if there are any similarities across cryptocurrencies?
+Can I do something that will more clearly make money? Arbitrage check - Ebay purchases.
 """
