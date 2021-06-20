@@ -127,35 +127,49 @@ short_or_long(test_prices2,average_price_increase, average_time_increase, averag
 """
 
 #spends all savings to buy a coin
-def buy(price, savings):
-    if savings == 0:
-        print('Tried to buy, but savings are $0, exiting.')
-        quit()
-        #sys.exit()
-    num_coins = price / savings
+#I'm pretty sure coins are endlessly subdividable, so we should be able to spend all our savings on the coins
+def buy_max(price, savings):
+    num_coins = savings / price #we can buy some number of coins 
     savings = 0
     return savings, num_coins
 
-def sell(price, coins_holding):
+def sell_max(price, coins_holding):
     savings = coins_holding * price
     return savings 
 
-closing_prices = [10, 13, 16, 19, 23]
+#closing_prices = [10, 13, 16, 19, 23] #seems to work 
+#closing_prices = [10, 19, 852, 242, 143, 84, 21]
 first = True
 holding = False
-savings = 1000.0
+initial_savings = 1000.0
+savings = initial_savings
 num_coins = 0.0
+print(f'Savings at start are ${savings}')
 for t in (range(1, len(closing_prices))): 
-    if closing_prices[t] - closing_prices[t-1] > 0: #increasing
-        if not holding:
-            savings, num_coins = buy(closing_prices[t], savings)
-            print(f'Bought {num_coins} coins at ${closing_prices[t]} at time {t} for ${num_coins * closing_prices[t]}')
-    elif closing_prices[t] - closing_prices[t-1] < 0: #decreasing, if same, do nothing
-        if holding:
-            savings = sell(closing_prices[t], num_coins)
-            print(f'Sold {num_coins} coins at ${closing_prices[t]} at time {t} for ${num_coins * closing_prices[t]}')
+    if savings >= 0.0 or num_coins >= 0.0:
+        print('------------------------')
+        profit = num_coins * closing_prices[t] + savings - initial_savings
+        multiplier = round((profit + initial_savings) / initial_savings, 2)
+        print(f'profit: ${profit}, {multiplier}x of initial savings')
+        print(f'price: ${closing_prices[t]}')
+        if closing_prices[t] - closing_prices[t-1] > 0: #increasing
+            print('price increasing')
+            if not holding:
+                savings, num_coins = buy_max(closing_prices[t], savings)
+                holding = True
+                print(f'Bought {round(num_coins,2)} coins at ${closing_prices[t]} at time {t} for ${round(num_coins * closing_prices[t])}')
+        elif closing_prices[t] - closing_prices[t-1] < 0: #decreasing, if same, do nothing
+            print('price decreasing')
+            if holding:
+                savings = sell_max(closing_prices[t], num_coins)
+                holding = False
+                print(f'Sold {num_coins} coins at ${closing_prices[t]} at time {t} for ${num_coins * closing_prices[t]}')
+        print(f'savings: {savings} num_coins: {num_coins}')
+    else:
+        print('Out of savings and coins, exiting.')
+        sys.exit()
 
-print(f'savings: {savings} num_coins: {num_coins}')
+#print(f'savings: {savings} num_coins: {num_coins}')
 
 def get_volatility():
     return 0
@@ -168,15 +182,23 @@ def get_volatility():
 increases and decreases do not include the last stretch because our strategy is 
 to compare the latest stretch to the previous stretches to decide if we should 
 buy or sell.
+"""
 
 
 
 
 
 
+"""
 ~For the future~
 I need to test short_or_long to make sure it works as expected
 I need to backtest to see if there's any sign it might work
 Can I find if there are any similarities across cryptocurrencies?
 Can I do something that will more clearly make money? Arbitrage check - Ebay purchases.
+
+It could be interesting to do some kind of risk management, where I don't invest
+all of my money and sell all of my coins at once. For instance, I'm 75% sure the price is going to go up,
+so I'm going to buy with 75% of my savings, or some proportional amount. So if the price goes down catastophically,
+I'm not so badly off. Though if it goes down, my returns are lower too. I suppose coin diversification would be helpful too.
+Try the strategy with different coins.
 """
