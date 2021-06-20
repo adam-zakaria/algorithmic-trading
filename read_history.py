@@ -169,6 +169,12 @@ for t in (range(1, len(closing_prices))):
         print('Out of savings and coins, exiting.')
         sys.exit()
 
+#price if I bought on the first tick and held 
+print('------------------')
+print('Profits if held from first day:')
+savings = 1000
+print(round((savings / closing_prices[0]) * closing_prices[len(closing_prices)-1], 2))
+
 #print(f'savings: {savings} num_coins: {num_coins}')
 
 def get_volatility():
