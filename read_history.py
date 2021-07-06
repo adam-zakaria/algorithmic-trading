@@ -126,15 +126,21 @@ short_or_long(test_prices2,average_price_increase, average_time_increase, averag
 #endregion
 """
 
+total_buys = 0
+total_sells = 0
+trade_fee_value = .98 #.98 of savings can be used to toward a buy. .98 of a sale is retained.
 #spends all savings to buy a coin
 #I'm pretty sure coins are endlessly subdividable, so we should be able to spend all our savings on the coins
+#Assuming 50/50 maker taker fees
 def buy_max(price, savings):
-    num_coins = savings / price #we can buy some number of coins 
+    num_coins = (savings * .98) / price #we can buy some number of coins 
     savings = 0
+    total_buys += 1
     return savings, num_coins
 
 def sell_max(price, coins_holding):
-    savings = coins_holding * price
+    savings = (coins_holding * price) * .98
+    total_sells += 1
     return savings 
 
 #closing_prices = [10, 13, 16, 19, 23] #seems to work 
@@ -174,15 +180,40 @@ print('------------------')
 print('Profits if held from first day:')
 savings = 1000
 print(round((savings / closing_prices[0]) * closing_prices[len(closing_prices)-1], 2))
+print(f'total_buys: {total_buys}')
+print(f'total_sells: {total_sells}')
 
 #print(f'savings: {savings} num_coins: {num_coins}')
 
 def get_volatility():
     return 0
 
+"""
+I want to reorganize this code - maybe have an interface fice. Maybe put functions
+I'm not using into a separate file. Put notes into a README potentially. Picking it up it's hard to 
+tell what's going on off the bat. 
+
+I was going to do something with figuring out how much the price goes up and down...forget whatever the technical
+definition of volatility is, I'll just do the useful thing I can think of.
+
+30- Day Volume (USD)	Maker	Taker
+$0 - $50,000	0.16%	0.26%
+
+Ethereum about 2,237.45
+Tried to purchase $100,
+Got $98.03
+$1.97 in fees - Kraken fee $1.47, processing fee: $.5
+
+1.47/98.03 = .015 = 1.5%
+.5/98.03=.005 = .5%
+
+
+The trading fees I see when I do a Preview Buy are consistent with what is reported, minus the omission
+of processing fees.
 
 
 """
+
 *Additional Notes*
 ~On the code~
 increases and decreases do not include the last stretch because our strategy is 
