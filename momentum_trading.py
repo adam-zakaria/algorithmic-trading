@@ -99,25 +99,7 @@ def short_or_long(price_list, average_price_increase, average_time_increase, ave
         else:
             print('short')
             return('short')
-#region closing_prices
-"""
-print('----------------------')
-print('closing_prices')
-positive_stretches, negative_stretches = create_stretches(closing_prices)
-average_price_increase, average_time_increase, average_price_decrease, average_time_decrease = get_averages(positive_stretches, negative_stretches)
-short_or_long(closing_prices,average_price_increase, average_time_increase, average_price_decrease, average_time_decrease )
-print('----------------------')
-#endregion
-#region test_prices2
-print('----------------------')
-print('test_prices2')
-#test_prices1 = [1,2,3,4,3,2,3,4,5,6,7,8,7,9,10,11,12,13,14,13,12,11,10,9,10,11]
-test_prices2 = [1,10, 13, 5, 22, 32, 4, 29]
-increases, decreases = create_stretches(test_prices2)
-average_price_increase, average_time_increase, average_price_decrease, average_time_decrease = get_averages(increases, decreases)
-short_or_long(test_prices2,average_price_increase, average_time_increase, average_price_decrease, average_time_decrease)
-#endregion
-"""
+
 
 total_buys = 0
 total_sells = 0
@@ -128,11 +110,13 @@ trade_fee_value = .98 #.98 of savings can be used to toward a buy. .98 of a sale
 def buy_max(price, savings):
     num_coins = (savings * .98) / price #we can buy some number of coins 
     savings = 0
+    global total_buys
     total_buys += 1
     return savings, num_coins
 
 def sell_max(price, coins_holding):
     savings = (coins_holding * price) * .98
+    global total_sells
     total_sells += 1
     return savings 
 
@@ -176,53 +160,6 @@ print(round((savings / closing_prices[0]) * closing_prices[len(closing_prices)-1
 print(f'total_buys: {total_buys}')
 print(f'total_sells: {total_sells}')
 
-#print(f'savings: {savings} num_coins: {num_coins}')
 
 def get_volatility():
     return 0
-
-"""
-I want to reorganize this code - maybe have an interface fice. Maybe put functions
-I'm not using into a separate file. Put notes into a README potentially. Picking it up it's hard to 
-tell what's going on off the bat. 
-
-I was going to do something with figuring out how much the price goes up and down...forget whatever the technical
-definition of volatility is, I'll just do the useful thing I can think of.
-
-30- Day Volume (USD)	Maker	Taker
-$0 - $50,000	0.16%	0.26%
-
-Ethereum about 2,237.45
-Tried to purchase $100,
-Got $98.03
-$1.97 in fees - Kraken fee $1.47, processing fee: $.5
-
-1.47/98.03 = .015 = 1.5%
-.5/98.03=.005 = .5%
-
-
-The trading fees I see when I do a Preview Buy are consistent with what is reported, minus the omission
-of processing fees.
-
-
-"""
-
-
-
-
-
-
-
-"""
-~For the future~
-I need to test short_or_long to make sure it works as expected
-I need to backtest to see if there's any sign it might work
-Can I find if there are any similarities across cryptocurrencies?
-Can I do something that will more clearly make money? Arbitrage check - Ebay purchases.
-
-It could be interesting to do some kind of risk management, where I don't invest
-all of my money and sell all of my coins at once. For instance, I'm 75% sure the price is going to go up,
-so I'm going to buy with 75% of my savings, or some proportional amount. So if the price goes down catastophically,
-I'm not so badly off. Though if it goes down, my returns are lower too. I suppose coin diversification would be helpful too.
-Try the strategy with different coins.
-"""
