@@ -7,7 +7,13 @@ The program reads in a set of prices (a price history) that was manually retriev
 
 Currently buy max will spend all of the starting funds on a single coin. Also, sell max sells all of the coins available at once.
 
-Additional Resources:
+#Findings
+  
+  
+# Additional Notes
+This is a very unsophisicated algorithm! get_average_stretch only considers how *long* a stretch is, not the *slope* of the stretch* - it does not consider how much a stretch is increasing or decreasing, just that it's doing one or the other. I
+  
+# Additional Resources:
 https://omscs.gatech.edu/cs-7646-machine-learning-trading
 https://find.minlib.net/iii/encore/record/C__Rb3814960__Spython%20for%20finance__Orightresult__U__X7?lang=eng&suite=cobalt
 https://www.amazon.com/Machine-Learning-Tom-M-Mitchell/dp/0070428077
