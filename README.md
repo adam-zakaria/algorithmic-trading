@@ -1,4 +1,4 @@
-# Run:
+# Run
 <need to add a package installation step>
 python3 momentum_trading.py
 
@@ -6,8 +6,10 @@ python3 momentum_trading.py
 The program reads in a set of prices (a price history) that was manually retrieved from Binance and creates 'stretches' - a stretch is meant ot represent a period of time (a stretch of time) that a price is moving in a single direction (up or down, I can't remember how I handle staying constant). Average stretches are calculated: the average time of a price momvement. For instance, the average up stretch is 45 minutes, the average down is 29 minutes. The idea is that at 'the current time' I look at the current direction and how long the stretch has been. If the average stretch is longer than the current stretch, then hold the asset. Once the current stretch is wthin x time of the average stretch, sell.
 
 Currently buy max will spend all of the starting funds on a single coin. Also, sell max sells all of the coins available at once.
+  
+![get increasing average stretch](https://user-images.githubusercontent.com/5415505/147394491-f768c982-e889-46b8-8c30-83988fd401e6.png)
 
-#Findings
+# Findings
   
   
 # Additional Notes
