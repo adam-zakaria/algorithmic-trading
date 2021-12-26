@@ -1,6 +1,7 @@
 # Introduction
 If you make millions of dollars with this algorithm don't blame me! This was merely meant as an exercise, to feel like I've dabbled in the exciting world of trading. It was fun to think about strategies and price graphs. This runs, though I cannot vouch for its correctness. Please contact me if you want to discuss :)
-
+<br />
+What I've done actually doesn't totally make sense. I've trained an algorithm and then tried the algorithm on the training data. And it didn't work well. I hope to get back to this once I finish the prototype of my game, which is currently my number 1 side project priority (as of 12/26/21).
 
 # Run
 <need to add a package installation step>
