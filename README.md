@@ -1,5 +1,5 @@
 # Run
-[need to add a package installation step]
+<need to add a package installation step>
 python3 momentum_trading.py
 
 # Background
