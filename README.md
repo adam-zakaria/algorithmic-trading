@@ -7,8 +7,9 @@ The program reads in a set of prices (a price history) that was manually retriev
 
 Currently buy max will spend all of the starting funds on a single coin. Also, sell max sells all of the coins available at once.
   
-![get increasing average stretch](https://user-images.githubusercontent.com/5415505/147394491-f768c982-e889-46b8-8c30-83988fd401e6.png)
+![algorithmic trading graphs back](https://user-images.githubusercontent.com/5415505/147415490-dfda7d2f-fd94-4784-a00c-b084d8d6a9e5.png)
 
+  
 # Findings
 
 If I started off this trading strategy at the beginning of the coin, I would've been better off just holding.
