@@ -14,6 +14,21 @@ Currently buy max will spend all of the starting funds on a single coin. Also, s
 
 If I started off this trading strategy at the beginning of the coin, I would've been better off just holding.
   
+The tail of the program output:
+```
+------------------------
+profit: $-998.2803310037507, 0.0x of initial savings
+price: $1915.07
+price increasing
+Bought 0.0 coins at $1915.07 at time 936 for $1
+savings: 0 num_coins: 0.0004266411871086535
+------------------
+Profits if held from first day:
+14938.14
+total_buys: 240
+total_sells: 239
+```
+  
 # Additional Notes
 This is a very unsophisicated algorithm! get_average_stretch only considers how *long* a stretch is, not the *slope* of the stretch* - it does not consider how much a stretch is increasing or decreasing, just that it's doing one or the other. I
   
