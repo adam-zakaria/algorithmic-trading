@@ -12,7 +12,7 @@ The program reads in a set of prices (a price history) that was manually retriev
 
 Currently buy max will spend all of the starting funds on a single coin. Also, sell max sells all of the coins available at once.
   
-![algorithmic trading graphs back](https://user-images.githubusercontent.com/5415505/147418034-bfe1bf3a-a71c-4e20-bd03-097b84cac51c.png)
+![algorithmic trading graphs back](https://user-images.githubusercontent.com/5415505/147418091-29f9646d-dd11-49ac-8181-d6e811dad8a9.png)
   
 # Findings
 
