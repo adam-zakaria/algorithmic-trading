@@ -1,3 +1,7 @@
+# Introduction
+If you make millions of dollars with this algorithm don't blame me! This was merely meant as an exercise, to feel like I've dabbled in the exciting world of trading. It was fun to think about strategies and price graphs. This runs, though I cannot vouch for its correctness. Please contact me if you want to discuss :)
+
+
 # Run
 <need to add a package installation step>
 python3 momentum_trading.py
