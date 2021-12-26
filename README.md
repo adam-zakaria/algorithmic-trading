@@ -10,10 +10,19 @@ Currently buy max will spend all of the starting funds on a single coin. Also, s
 ![get increasing average stretch](https://user-images.githubusercontent.com/5415505/147394491-f768c982-e889-46b8-8c30-83988fd401e6.png)
 
 # Findings
-  
+
+If I started off this trading strategy at the beginning of the coin, I would've been better off just holding.
   
 # Additional Notes
 This is a very unsophisicated algorithm! get_average_stretch only considers how *long* a stretch is, not the *slope* of the stretch* - it does not consider how much a stretch is increasing or decreasing, just that it's doing one or the other. I
+  
+Another problem is that I train on the data I'm evaluating!
+  
+I think I'm also realizing I didn't implement a short. 
+  
+I'm also realizing there are probably a million more of these algorithms on quantopian like sites :)
+  
+
   
 # Additional Resources:
 https://omscs.gatech.edu/cs-7646-machine-learning-trading
